@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#200000">
+    <link rel="stylesheet" href="../main_style.css">
+    <title>FTW Linux Terminal</title>
+</head>
+<body>
+    <div class="frame">
+        <div class="window window-buffer-list">
+            <aside class="buffer-list">
+                <div class="buffer-list-header">Buffer</div>
+                <ol class="buffer-list-items">
+                    <li><a href="../index.html">index.html</a></li>
+                    <li><a href="../recreation.html">recreation.html</a></li>
+                    <li class="current"><a href="ftw-linux-terminal.html">recreation/ftw-linux-terminal.html</a></li>
+                    <li><a href="../error.html">error.html</a></li>
+                </ol>
+            </aside>
+            <div class="modeline">-:**-  *Buffer List*   All</div>
+        </div>
+        <div class="window window-main">
+            <main class="page">
+                <h1>FTW Linux Terminal</h1>
+                <p class="comment">Recreational C++ on a Raspberry Pi Zero 2 W. A devlog.</p>
+                <p><a href="../recreation.html">← back to recreation</a></p>
+
+                <article class="post" id="day-1">
+                    <header class="post-header">
+                        <h2 class="post-title">Day 1 - Update / Fixed Update / Input</h2>
+                        <time class="post-date" datetime="2026-11-22">2026-11-22</time>
+                    </header>
+
+                    <p>Like most humans, I woke up with the urge to use Vim on my Raspberry Pi Zero 2 W to code a game purely in a linux terminal using C++. This is the return of Frog Token Worlds (the unfortunate sequel that nobody asked for).</p>
+
+                    <h3>My Setup</h3>
+                    <p>I’m using a Raspberry Pi Zero 2 W, which has 512MB of RAM, it’s about the size of a flash drive and cost me $15. I’m using a keyboard and monitor that I got for free. The power cable I got in a kit, individually it’s worth $9 on Amazon.</p>
+                    <p>The total cost of this setup I’m using is &lt;$25, so if you don’t have a setup to write C++, go mow a single lawn at a discounted price and you now have sufficient technology to become a C++ developer.</p>
+
+                    <h3>About Frog Token Worlds</h3>
+                    <p>For those interested, Frog Token Worlds is a game I released on itch.io a 2D and 3D version of, I showed it off at a gaming convention that is no longer with us (ECGC 2022), working alongside the 3D artist Logan Thomas (who is known for his work at Funcom). This work was done pre-employment at Epic Games. Post-employment at Epic Games, I started working on an Unreal Engine 5 version of the game that features multiplayer using the Online Multiplayer Subsystem to host / join peer-to-peer multiplayer, using UE’s networking reflection system (this is unreleased).</p>
+
+                    <h3>AI Disclaimer</h3>
+                    <p>I am using AI for documentation to see what libraries exist so I can accelerate my knowledge, using a separate device, there is no AI hooked up to my Pi Zero, I am writing the C++ code by hand, byte by byte. I think AI is an amazing tool for productivity and accomplishing things at a speed that was never before possible (I have other projects where I focus on this further). That being said I am using this as an opportunity to learn more about C++ as an excuse to code more and continue learning about C++ practices, which will make me continue to generate and maintain better C++ code using AI. It has never been easier to learn about what boilerplate is required for input / rendering on a linux terminal.</p>
+
+                    <h3>This is not a tutorial</h3>
+                    <p>I will not be going over how to setup your Raspberry Pi to develop C++ games in Vim, if you’re interested in this, consult your AI model of choice. Setup for new environments has never been easier in this new era of technology. Also, I am writing this all in a single <code>main.cpp</code> at the moment because I think it may be neat to make this game in 1 file, but will see how much I regret this decision later.</p>
+                    <p>The most satisfying part about all this work is seeing how tiny the computer is, using the default syntax highlighting in Vim (using hit classics such as #FF0000, #FFFF00, #FF00FF, #00FF00, and #00FFFF) and most importantly of all — no language server!</p>
+
+                    <h3>Update / Fixed Update Loop</h3>
+                    <blockquote>“Isn’t this just <code>while(true){}</code>?”</blockquote>
+                    <p>Now for the easiest part about developing a game from scratch in C++, the game loop. If you’ve used Unity or Godot, you’re familiar with <code>void Update()</code> and <code>void FixedUpdate()</code>. It’s important to get this right because it will determine how your game looks and feels to the user. Without going too far in the weeds, <code>Update()</code> is used for input and rendering and has a higher cap of FPS, <code>FixedUpdate()</code> is where your physics run on a fixed frame time. The reason I say <code>Update()</code> has a cap, is because by default, <code>Update()</code> will run &gt;1,000,000 / second.</p>
+                    <p>I use the following at the end of the main game loop to control the FPS (300 being my arbitrary FPS cap). This way, I can just call <code>Update()</code> in my main loop.</p>
+                    <pre><code>this_thread::sleep_until(chrono::steady_clock::now() + chrono::milliseconds(1000 / 300));</code></pre>
+                    <p>For <code>FixedUpdate()</code>, every iteration of the main game loop is checking <code>if(CurTime - LastFrameTime &gt;= (1000ms / FixedFPS))</code>. I previously was doing <code>if(CurTime &gt; (LastFrameTime + (1000ms / FixedFPS)))</code>, but decided the former was more clean. These are however mathematically identical. To test this, I incremented a variable of <code>FixedFrames</code> in <code>FixedUpdate()</code> and <code>UpdateFrames</code> in <code>Update()</code>, and made the game end after 5000ms (this is how I found out the while loop ran 6,000,000 times in 5 seconds). This proves how important it is to verify fundamental code that runs frequently works, otherwise we could be performing expensive operations faster than the little Raspberry Pi Zero 2 W can handle.</p>
+
+                    <h3>Input</h3>
+                    <p>I started using Termios, which is a linux library for input, generally recommended for UI. There was some boiler plate I used and made my own input system (that is basically just a case statement), which made me realize movement with this is a bit janky - if I were to hold down left, then press space, and let go of space, all input would stop. This is bad for gameplay because I want the player to keep moving left after I jump while moving left.</p>
+                    <p>The alternative I learned about is called “evdev” which is another linux input system that is closer to the kernel, and is used for tracking input events concurrently. I was going to get into rendering today but decided I have only enough wind in me to refactor the Termios input system I worked on into using evdev.</p>
+                    <p>This runs in the <code>Update()</code> loop under a <code>CheckInput()</code> method (for code cleanliness even though it’s all in <code>main.cpp</code> now anyways :D )</p>
+                    <p>After adding evdev, I implemented a method following more boilerplate that detects a keyboard (errors if initialization fails). The key difference (HAHA GET IT?!? KEY?!??? LIKE KEYBOARD KEYS?!?) is evdev gives you access to “on release” which allows you to design a smoother method of holding down more than 1 key while playing.</p>
+                    <p>I did not finish implementing the evdev version as I started getting sleepy and I may be getting sick, hopefully not too sick as I want my brain to be at peak performance so I can finish input and move onto rendering on a linux terminal.</p>
+                    <p>^That’s something a quitter would say. Finished implementing evdev so tomorrow all I have to worry about is rendering. Recreational C++ is da bomb. Aight I’m outta here peace chat.</p>
+                </article>
+            </main>
+            <div class="modeline">-:**-  recreation/ftw-linux-terminal.html   Top  (Fundamental)</div>
+        </div>
+    </div>
+    <div class="minibuffer"><span class="cursor"></span></div>
+</body>
+</html>

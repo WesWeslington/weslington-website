@@ -3,11 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#200000">
   <title>Weslington Home</title>
   <link rel="stylesheet" href="main_style.css">
 </head>
 <body>
-  <h1>Error webpage not found</h1>
-  <p>Woopsy daisies! Looks like you went to a page that is non-existent!</p>
+  <div class="frame">
+    <div class="window window-buffer-list">
+      <aside class="buffer-list">
+        <div class="buffer-list-header">Buffer</div>
+        <ol class="buffer-list-items">
+          <li><a href="index.html">index.html</a></li>
+          <li><a href="recreation.html">recreation.html</a></li>
+          <li><a href="recreation/ftw-linux-terminal.html">recreation/ftw-linux-terminal.html</a></li>
+          <li class="current"><a href="error.html">error.html</a></li>
+        </ol>
+      </aside>
+      <div class="modeline">-:**-  *Buffer List*   All</div>
+    </div>
+    <div class="window window-main">
+      <main class="page">
+        <h1>Error webpage not found</h1>
+        <p>Woopsy daisies! Looks like you went to a page that is non-existent!</p>
+        <p><a href="index.html">← back to index</a></p>
+      </main>
+      <div class="modeline">-:**-  error.html   Top  (Fundamental)</div>
+    </div>
+  </div>
+  <div class="minibuffer"><span class="cursor"></span></div>
 </body>
 </html>

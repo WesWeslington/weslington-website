@@ -3,11 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#200000">
     <link rel="stylesheet" href="main_style.css">
     <title>Weslington Home</title>
 </head>
 <body>
-    <h1>Welcome to Weslington Home</h1>
-    <p>There's nothing here yet. Maybe one day when I get bored enough...</p>
+    <div class="frame">
+        <div class="window window-buffer-list">
+            <aside class="buffer-list">
+                <div class="buffer-list-header">Buffer</div>
+                <ol class="buffer-list-items">
+                    <li class="current"><a href="index.html">index.html</a></li>
+                    <li><a href="recreation.html">recreation.html</a></li>
+                    <li><a href="recreation/ftw-linux-terminal.html">recreation/ftw-linux-terminal.html</a></li>
+                    <li><a href="error.html">error.html</a></li>
+                </ol>
+            </aside>
+            <div class="modeline">-:**-  *Buffer List*   All</div>
+        </div>
+        <div class="window window-main">
+            <main class="page">
+                <h1>Welcome to Weslington Home</h1>
+                <p>There's nothing here yet. Maybe one day when I get bored enough...</p>
+            </main>
+            <div class="modeline">-:**-  index.html   Top  (Fundamental)</div>
+        </div>
+    </div>
+    <div class="minibuffer"><span class="cursor"></span></div>
 </body>
 </html>
